@@ -1,0 +1,29 @@
+html, body{
+	height:100%;
+	width: 100%;
+	margin:0;
+	padding:0;
+}
+header{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+}
+textarea{
+	 resize: none;
+}
+button{
+	margin-top: 6px;
+}
+.form-group{
+	margin:12px;
+}
+.floor-node{
+	display:block;
+	margin: auto;
+	width: 200px;
+}
+.menu-buttons{
+	margin:12px;
+}
