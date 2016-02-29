@@ -134,18 +134,22 @@ function calculateMaxShearForce(){
 			var magnitude=Math.sqrt(forces[j][0]*forces[j][0]+forces[j][1]*forces[j][1]);
 			if(magnitude<firstLowest){
 				firstLowest=magnitude;
-				firstLowestIndex=i;
+				firstLowestIndex=j;
 			}
-			else if (magnitude<secondLowest){
+		}
+		shear_forces.push(firstLowest);
+		force_arrangement.push(forces.splice(firstLowestIndex,1)[0]);
+		//find the two lowest magnitude forces
+		for(var j=0;j<forces.length;j++){
+			var magnitude=Math.sqrt(forces[j][0]*forces[j][0]+forces[j][1]*forces[j][1]);
+			if(magnitude<secondLowest){
 				secondLowest=magnitude;
 				secondLowestIndex=j;
 			}
 		}
 
-		shear_forces.push(firstLowest);
 		shear_forces.push(secondLowest);
-		force_arrangement.push(forces.splice(firstLowestIndex,1));
-		firstLowestIndex < secondLowestIndex ? forces.splice(secondLowestIndex-1,1) : forces.splice(secondLowestIndex,1); //get rid of of the second greatest force
+		forces.splice(secondLowestIndex,1);
 
 		var total_x=force_arrangement[0][0];
 		var total_y=force_arrangement[0][1];
@@ -162,7 +166,7 @@ function calculateMaxShearForce(){
 			total_x+=forces[lowest_index][0];
 			total_y+=forces[lowest_index][1];
 			shear_forces.push(Math.sqrt(Math.pow(total_x,2)+Math.pow(total_y,2)));
-			force_arrangement.push(forces.splice(lowest_index,1));
+			force_arrangement.push(forces.splice(lowest_index,1)[0]);
 		}
 
 		for(var j=0;j<shear_forces.length;j++){
@@ -187,11 +191,10 @@ module.exports=function (){
 	calculateSupportReactions();
 	methodOfJoints();
 	calculateRuptureAndBucklingStress();
-	//calculateMaxShearForce();
+	calculateMaxShearForce();
 
 	$('#design_weight').text(E.design_weight.toFixed(2)+'g');
 	$('#applied_load').text((E.design_weight*E.desired_ratio).toFixed(2)+'g');
 	$('#design_pass').text(E.designPass);
 	$('#px_per_cm').text(Grid.px_per_cm.toFixed(2)+'px/cm');
-
 };
