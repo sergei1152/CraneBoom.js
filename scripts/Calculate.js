@@ -103,7 +103,7 @@ module.exports=function (){
 	Grid.calcPxPerCm(E);
 	E.design_weight=calculateDesignWeight();
 
-	E.loadedPin.external_force=[0,-1*E.design_weight*9.8*E.desired_ratio/1000];
+	E.loadedPin.external_force=[0,-1*E.design_weight*9.8*E.desired_ratio/1000/2];//we devide by 2 because we're calculating for half the truss
 	calculateSupportReactions();
 	methodOfJoints();
 	// calculateSupportReactions();
