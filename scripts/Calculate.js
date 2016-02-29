@@ -81,47 +81,32 @@ function methodOfJoints(){
 
 	E.designPass=true; //for checking whether a design meets the criteria
 	
-	//applying the force value to the specified member, as well as checking if its under the constraints
+	//applying the force value to the specified member
 	for(i=0;i<E.members.length;i++){
 		E.members[i].setForce(forces[i],E);
-		// if(forces[i]>0 && forces[i]>E.max_tensile){
-		// 	E.designPass=false;
-		// }
-		// else if(forces[i]<0 && Math.abs(forces[i])>E.max_compressive){
-		// 	E.designPass=false;
-		// }
 	}
 }
 
 function calculateRuptureAndBucklingStress(){
 	var minimumArea=(E.member_width*E.member_thickness-E.node_diameter*E.member_thickness)*100;//to convert cm^2 to mm2
-	var maximumArea=E.member_width*E.member_thickness*100;
 	var momentOfAreaMember=E.member_width*Math.pow(E.member_thickness,3)*10000/12; //we multiply by 10000 to convert cm4 to mm4
 	var pi_squared=Math.PI*Math.PI;
-	var maximumBearingLoad=E.maximum_bearing_stress*E.member_thickness*E.node_diameter*100; //multiply by 100 to convert cm2 to mm2
-	console.log('THe maximum bearing load is'+maximumBearingLoad);
+
 	for(i=0;i<E.members.length;i++){
 		if(E.members[i].force===0){
 			E.members[i].stress=0;
 		}
 		else if(E.members[i].force>0){ //if we have a tensile force (make sure theres no rupture)
-			E.members[i].stress=E.members[i].force/minimumArea;
+			E.members[i].setStress(E.members[i].force/minimumArea,E);
 			if(E.members[i].stress>E.max_tensile_stress){
-				E.members[i].rupture_failure=true;
-				console.log('member '+i+' ruptured');
+				E.designPass=false;
 			}
 		}
 		else if(E.members[i].force<0){ //under compressive stress, make sure there no buckling
-			E.members[i].stress=E.members[i].force/maximumArea;
-			E.members[i].critical_load=pi_squared*E.member_modulus_elasticity*momentOfAreaMember/Math.pow((E.members[i].member_length*10/Grid.px_per_cm),2);
+			E.members[i].setCriticalLoad(pi_squared*E.member_modulus_elasticity*momentOfAreaMember/Math.pow((E.members[i].member_length*10/Grid.px_per_cm),2)/4);//we devide the critical load by 4 since euler's appriximation overestimates
 
-			if(Math.abs(E.members[i].force)>E.members[i].critical_load/4){//we devide the critical load by 4 since euler's appriximation overestimates
-				E.members[i].buckling_failure=true;
-				console.log('member '+i+' buckled');
-			}
-			if(Math.abs(E.members[i].stress)>E.max_tensile_stress){
-				E.members[i].compressive_failure=true;
-				console.log('member '+i+' failed due to compression');
+			if(Math.abs(E.members[i].force)>E.members[i].critical_load){//we devide the critical load by 4 since euler's appriximation overestimates
+				E.designPass=false;
 			}
 		}
 	}
@@ -185,22 +170,26 @@ function calculateMaxShearForce(){
 				maximum_shear_force=shear_forces[j];
 			}
 		}
-		E.nodes[i].maximum_shear_stress=maximum_shear_force/node_area;
+		var stress=maximum_shear_force/node_area;
+		E.nodes[i].setShearStress(stress);
+		if(stress>E.node_maximum_shear_stress){
+			E.designPass=false;
+		}
 	}
 }
 
 module.exports=function (){
+	E.designPass=true;
 	Grid.calcPxPerCm(E);
 	E.design_weight=calculateDesignWeight();
 
 	E.loadedPin.setForce(0,-1*E.design_weight*9.8*E.desired_ratio/1000/2,Grid.canvas);//we devide by 2 because we're calculating for half the truss
 	calculateSupportReactions();
 	methodOfJoints();
-	// E.calculateBearingMaxBearingStress();
-	// calculateRuptureAndBucklingStress();
-	// calculateMaxShearForce();
-	// calculateSupportReactions();
-	// calculateWeightDistributionOfCar();
-	// methodOfJoints();
-	// $('#bridge_cost').text(calculateCost());
+	calculateRuptureAndBucklingStress();
+	//calculateMaxShearForce();
+
+	$('#design_weight').text(E.design_weight.toFixed(2)+'g');
+	$('#applied_load').text((E.design_weight*E.desired_ratio).toFixed(2)+'g');
+	$('#design_pass').text(E.designPass);
 };

@@ -55,6 +55,31 @@ var Member = fabric.util.createClass(fabric.Line, {
     }
 });
 
+Member.prototype.setStress=function(stress,E){
+    this.stress=stress;
+    this.label+= 'N ('+Math.round(stress*100)/100+' MPa)';
+    percentMax=stress*100/E.member_max_tensile_stress;
+    if(percentMax>100){ //if the force exceeded maximum tensile force
+        this.stroke='hsla(65, 100%, 60%, 1)';
+    }
+    else{
+        this.stroke='hsla(243, '+(percentMax*0.8+20)+'%,50%, 1)';
+    }
+};
+
+Member.prototype.setCriticalLoad=function(load){
+    this.critical_load=load;
+    this.label+= 'N (CR:'+Math.round(load*100)/100+'N)';
+
+    var percentMax=-1*this.force*100/load;
+    if(percentMax>100){ //if the force exceeded compressive tensile force
+        this.stroke='hsla(65, 100%, 60%, 1)';
+    }
+    else{
+        this.stroke='hsla(360, '+(percentMax*0.8+20)+'%,50%, 1)';
+    }
+};
+
 //calculates the length of the member in pixels for cost calculations
 Member.prototype.calcLength=function(){
     this.member_length=Math.sqrt((this.x2-this.x1)*(this.x2-this.x1)+(this.y2-this.y1)*(this.y2-this.y1));

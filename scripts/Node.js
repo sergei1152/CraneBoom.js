@@ -22,6 +22,7 @@ var Node = fabric.util.createClass(fabric.Circle, {
             selectable: options.selectable || true,
             hasControls: false,
             hasBorders: false,
+            label: options.label || '',
             maximum_shear_stress: null,
             support: options.support || false, //if the node is a support (and thus is a floor beam as well)
             floor_beam: options.floor_beam || false, //if the node is a floor beam
@@ -47,11 +48,14 @@ var Node = fabric.util.createClass(fabric.Circle, {
         } else {
             yOff = 12;
         }
+        ctx.font = '20px Arial';
+        ctx.fillStyle = 'hsla(87, 100%, 24%, 1)'; //color of the font
         if (this.showCoords) {
             // ctx.fillRect(-10, yOff, 150, 22); //will show a white rectangle background around the coordinates of the node
-            ctx.font = '20px Arial';
-            ctx.fillStyle = 'hsla(87, 100%, 24%, 1)'; //color of the font
-            ctx.fillText('('+Math.round(this.left*100)/100+', ' +Math.round(this.top*100)/100+')', 12,yOff+18);
+            ctx.fillText(this.label+' ('+Math.round(this.left*100)/100+', ' +Math.round(this.top*100)/100+')', 12,yOff+18);
+        }
+        else{
+            ctx.fillText(this.label,12,yOff+18);
         }
     }
 });
@@ -102,7 +106,17 @@ Node.prototype.moveMembers = function(canvas) {
         }
     }
 };
-
+Node.prototype.setShearStress=function(stress){
+    this.maximum_shear_stress=stress || 0;
+    this.label=stress+'MPa';
+    var percentMax=stress*100/E.node_maximum_shear_stress;
+    if(percentMax>100){ //if the force exceeded maximum tensile force
+        this.stroke='hsla(65, 100%, 60%, 1)';
+    }
+    else{
+        this.stroke='hsla(360, '+(percentMax*0.8+20)+'%,50%, 1)';
+    }
+}
 //set the reaction force of the node
 Node.prototype.setForce=function(x,y,canvas){
     this.external_force[0]=x || 0;
