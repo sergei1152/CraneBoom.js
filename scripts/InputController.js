@@ -23,6 +23,14 @@ var InputController=function(){
 	    }
 	});
 
+	$('#member_width').change(function() {
+	    var width = parseInt($(this).val());
+	    if (!isNaN(width) && width >1) { //to make sure the input is valid (is an integer and greater than 1)
+	       EntityController.member_width=width;
+	       Calculate();
+	    }
+	});
+
 	//Monitors for changes in the grid spacing input field and re-creates the grid if a change is detected
 	$('#grid-size-input').change(function() {
 	    var new_grid_size = parseInt($('#grid-size-input').val());
