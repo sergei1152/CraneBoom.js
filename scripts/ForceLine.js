@@ -34,9 +34,9 @@ var ForceLine = fabric.util.createClass(fabric.Line, {
 
     _render: function(ctx) {
         this.callSuper('_render', ctx);
-        ctx.font = '20px Arial';
+        ctx.font = '16px Arial';
         ctx.fillStyle = '#FF0096'; //color of the font
-        ctx.fillText(this.label, -this.width / 4+10, -this.height / 2+30);
+        ctx.fillText(this.label, -this.width / 4+10, -this.height / 2+60);
     }
 });
 

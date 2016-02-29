@@ -22,9 +22,6 @@ function calculateSupportReactions(){
 	//calculate support reactions, and otherwise 0 if the car is completely out of the bridge and not touching the supports
 	E.supportA.setForce(-1*Math.abs(E.crane_length/E.crane_height*E.loadedPin.external_force[1]),Math.abs(E.loadedPin.external_force[1]),Grid.canvas);
 	E.supportB.setForce(-1*E.supportA.external_force[0],0,Grid.canvas);
-	console.log('Support A');
-	console.log(E.supportA.external_force);
-	console.log(E.supportB.external_force);
 }
 
 //Creates a matrix of 2N-3 equations based on the method of joints, and solves it
@@ -75,12 +72,9 @@ function methodOfJoints(){
 	solution.pop();
 	solution.pop();
 	solution.pop();
-	console.log(numeric.prettyPrint(force_matrix));
-	console.log(numeric.prettyPrint(solution));
-	var forces=numeric.solve(force_matrix, solution, false); //solving for the forces
 
-	E.designPass=true; //for checking whether a design meets the criteria
-	
+	var forces=numeric.solve(force_matrix, solution, false); //solving for the forces
+		
 	//applying the force value to the specified member
 	for(i=0;i<E.members.length;i++){
 		E.members[i].setForce(forces[i],E);

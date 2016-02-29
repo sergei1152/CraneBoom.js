@@ -48,9 +48,9 @@ var Member = fabric.util.createClass(fabric.Line, {
         this.callSuper('_render', ctx);
         if (this.force !== null) {
             // ctx.fillRect(-10, -8, 80, 28); //shows a white rectangle behind the force
-            ctx.font = '20px Arial';
+            ctx.font = '15px Arial';
             ctx.fillStyle = 'hsla(53, 100%, 24%, 1)'; //color of the font
-            ctx.fillText(this.label, 0,20);
+            ctx.fillText(this.label, 10,20);
         }
     }
 });

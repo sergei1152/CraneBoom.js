@@ -43,7 +43,7 @@ var Node = fabric.util.createClass(fabric.Circle, {
     _render: function(ctx) {
         this.callSuper('_render', ctx);
 
-        ctx.font = '20px Arial';
+        ctx.font = '15px Arial';
         ctx.fillStyle = 'hsla(87, 100%, 24%, 1)'; //color of the font
         if (this.showCoords) {
             // ctx.fillRect(-10, yOff, 150, 22); //will show a white rectangle background around the coordinates of the node
@@ -124,14 +124,14 @@ Node.prototype.setForce=function(x,y,canvas){
         this.forceLineX.set({
             x1: this.left,
             y1: this.top,
-            label: Math.abs(roundedX),
+            label: Math.abs(roundedX)+'N',
             x2: this.left+roundedX*10,
             y2: this.top
         });
         this.forceLineY.set({
             x1: this.left,
             y1: this.top,
-            label: Math.abs(roundedY),
+            label: Math.abs(roundedY)+'N',
             x2: this.left,
             y2: this.top-30*roundedY
         }); 
@@ -140,14 +140,14 @@ Node.prototype.setForce=function(x,y,canvas){
         this.forceLineX=new ForceLine({
             x1: this.left,
             y1: this.top,
-            label: Math.abs(roundedX),
+            label: Math.abs(roundedX)+'N',
             x2: this.left+roundedX*10,
             y2: this.top
             }); 
         this.forceLineY=new ForceLine({
             x1: this.left,
             y1: this.top,
-            label: Math.abs(roundedY),
+            label: Math.abs(roundedY)+'N',
             x2: this.left,
             y2: this.top-30*roundedY
             }); 
