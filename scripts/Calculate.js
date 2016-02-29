@@ -78,12 +78,12 @@ function methodOfJoints(){
 	//applying the force value to the specified member, as well as checking if its under the constraints
 	for(i=0;i<E.members.length;i++){
 		E.members[i].setForce(forces[i],E);
-		if(forces[i]>0 && forces[i]>E.max_tensile){
-			E.designPass=false;
-		}
-		else if(forces[i]<0 && Math.abs(forces[i])>E.max_compressive){
-			E.designPass=false;
-		}
+		// if(forces[i]>0 && forces[i]>E.max_tensile){
+		// 	E.designPass=false;
+		// }
+		// else if(forces[i]<0 && Math.abs(forces[i])>E.max_compressive){
+		// 	E.designPass=false;
+		// }
 	}
 }
 
@@ -105,9 +105,7 @@ module.exports=function (){
 
 	E.loadedPin.external_force=[0,-1*E.design_weight*9.8*E.desired_ratio/1000];
 	calculateSupportReactions();
-	debugger
-	console.log(E.loadedPin.external_force);
-	console.log(calculateDesignWeight());
+	methodOfJoints();
 	// calculateSupportReactions();
 	// calculateWeightDistributionOfCar();
 	// methodOfJoints();

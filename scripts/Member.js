@@ -94,28 +94,28 @@ module.exports=Member;
 //sets the force of the member as well as sets the proper color based on if its under compression or tension, as well as how close it is to its maximum tension or compression
 Member.prototype.setForce=function(x,EntityController){
     this.force=x;
-    var percentMax;
-    if(x<0){ //if the force is compressive
-        percentMax=-x*100/EntityController.max_compressive;
-        if(percentMax>100){ //if the force exceeded compressive tensile force
-            this.stroke='hsla(65, 100%, 60%, 1)';
-        }
-        else{
-            this.stroke='hsla(360, '+(percentMax*0.8+20)+'%,50%, 1)';
-        }
-    }
-    else if(x>0){ //if the force is tensile
-        percentMax=x*100/EntityController.max_tensile;
-        if(percentMax>100){ //if the force exceeded maximum tensile force
-            this.stroke='hsla(65, 100%, 60%, 1)';
-        }
-        else{
-            this.stroke='hsla(243, '+(percentMax*0.8+20)+'%,50%, 1)';
-        }
-    }
-    else{
-        this.stroke='hsla(243, 0%,50%, 1)';
-    }
+    // var percentMax;
+    // if(x<0){ //if the force is compressive
+    //     percentMax=-x*100/EntityController.max_compressive;
+    //     if(percentMax>100){ //if the force exceeded compressive tensile force
+    //         this.stroke='hsla(65, 100%, 60%, 1)';
+    //     }
+    //     else{
+    //         this.stroke='hsla(360, '+(percentMax*0.8+20)+'%,50%, 1)';
+    //     }
+    // }
+    // else if(x>0){ //if the force is tensile
+    //     percentMax=x*100/EntityController.max_tensile;
+    //     if(percentMax>100){ //if the force exceeded maximum tensile force
+    //         this.stroke='hsla(65, 100%, 60%, 1)';
+    //     }
+    //     else{
+    //         this.stroke='hsla(243, '+(percentMax*0.8+20)+'%,50%, 1)';
+    //     }
+    // }
+    // else{
+    //     this.stroke='hsla(243, 0%,50%, 1)';
+    // }
     this.label=Math.round(x*100)/100 || '';
 };
 
