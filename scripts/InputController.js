@@ -25,7 +25,7 @@ var InputController=function(){
 
 	$('#member_width').change(function() {
 	    var width = parseInt($(this).val());
-	    if (!isNaN(width) && width >1) { //to make sure the input is valid (is an integer and greater than 1)
+	    if (!isNaN(width)) { //to make sure the input is valid (is an integer and greater than 1)
 	       EntityController.member_width=width;
 	       Calculate();
 	    }
