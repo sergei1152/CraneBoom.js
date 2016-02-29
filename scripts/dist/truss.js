@@ -21,8 +21,8 @@ function calculateDesignWeight(){
 //Calculating the support reactions at the 2 support nodes using moments
 function calculateSupportReactions(){
 	//calculate support reactions, and otherwise 0 if the car is completely out of the bridge and not touching the supports
-	E.supportA.setForce(0,(actual_weight*(bridge_length_px-distance_a_centroid_px))/(bridge_length_px) || 0,Grid.canvas);
-	E.supportB.setForce(0,(actual_weight*(distance_a_centroid_px))/(bridge_length_px) || 0,Grid.canvas);
+	E.supportA.setForce(Math.abs(E.crane_length/E.crane_height*E.loadedPin.external_force[1]),Math.abs(E.loadedPin.external_force[1]));
+	E.supportB.setForce(-1*E.supportA.external_force[0],0);
 }
 
 //Creates a matrix of 2N-3 equations based on the method of joints, and solves it
@@ -102,6 +102,12 @@ function calculateCost(){
 
 module.exports=function (){
 	Grid.calcPxPerCm(E);
+	E.design_weight=calculateDesignWeight();
+
+	E.loadedPin.external_force=[0,-1*E.design_weight*9.8*E.desired_ratio/1000];
+	calculateSupportReactions();
+	debugger
+	console.log(E.loadedPin.external_force);
 	console.log(calculateDesignWeight());
 	// calculateSupportReactions();
 	// calculateWeightDistributionOfCar();
@@ -1325,40 +1331,7 @@ Node.prototype.moveMembers = function(canvas) {
 Node.prototype.setForce=function(x,y,canvas){
     this.external_force[0]=x || 0;
     this.external_force[1]=y || 0;
-    roundedX=Math.round(x*100)/100;
-    roundedY=Math.round(y*100)/100;
-    if(this.forceLine){ //if a force line already exists
-        this.forceLine.set({
-            x1: this.left,
-            y1: this.top,
-            label: roundedY,
-            x2: this.left,
-            y2: this.top-y*200/E.car_weight
-        });
-    }
-    else{ //if the forceline doesnt yet exist
-        this.forceLine=new ForceLine({
-            x1: this.left,
-            y1: this.top,
-            label: roundedY,
-            x2: this.left,
-            y2: this.top-y*200/E.car_weight
-        });
-        canvas.add(this.forceLine);
-    }
 };
-
-//checks if the car is on the node
-Node.prototype.isCarOn=function(){
-    if(E.car){
-        if(this.left>=E.car.left-E.car_length_px/2 && this.left<=E.car.left+E.car_length_px/2){
-            return true;
-        }
-    }
-    return false;
-};
-
-
 },{"./EntityController":3,"./ForceLine":4}],11:[function(require,module,exports){
 /*An optimizer function that works by randomly placing all non-floor nodes of a current design a certain radius r defined by the
 variation property. It iterates for a certain duration, and saves the design that has the lowest cost*/

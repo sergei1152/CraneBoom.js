@@ -20,8 +20,8 @@ function calculateDesignWeight(){
 //Calculating the support reactions at the 2 support nodes using moments
 function calculateSupportReactions(){
 	//calculate support reactions, and otherwise 0 if the car is completely out of the bridge and not touching the supports
-	E.supportA.setForce(0,(actual_weight*(bridge_length_px-distance_a_centroid_px))/(bridge_length_px) || 0,Grid.canvas);
-	E.supportB.setForce(0,(actual_weight*(distance_a_centroid_px))/(bridge_length_px) || 0,Grid.canvas);
+	E.supportA.setForce(Math.abs(E.crane_length/E.crane_height*E.loadedPin.external_force[1]),Math.abs(E.loadedPin.external_force[1]));
+	E.supportB.setForce(-1*E.supportA.external_force[0],0);
 }
 
 //Creates a matrix of 2N-3 equations based on the method of joints, and solves it
@@ -101,6 +101,12 @@ function calculateCost(){
 
 module.exports=function (){
 	Grid.calcPxPerCm(E);
+	E.design_weight=calculateDesignWeight();
+
+	E.loadedPin.external_force=[0,-1*E.design_weight*9.8*E.desired_ratio/1000];
+	calculateSupportReactions();
+	debugger
+	console.log(E.loadedPin.external_force);
 	console.log(calculateDesignWeight());
 	// calculateSupportReactions();
 	// calculateWeightDistributionOfCar();

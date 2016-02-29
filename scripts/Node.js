@@ -106,36 +106,4 @@ Node.prototype.moveMembers = function(canvas) {
 Node.prototype.setForce=function(x,y,canvas){
     this.external_force[0]=x || 0;
     this.external_force[1]=y || 0;
-    roundedX=Math.round(x*100)/100;
-    roundedY=Math.round(y*100)/100;
-    if(this.forceLine){ //if a force line already exists
-        this.forceLine.set({
-            x1: this.left,
-            y1: this.top,
-            label: roundedY,
-            x2: this.left,
-            y2: this.top-y*200/E.car_weight
-        });
-    }
-    else{ //if the forceline doesnt yet exist
-        this.forceLine=new ForceLine({
-            x1: this.left,
-            y1: this.top,
-            label: roundedY,
-            x2: this.left,
-            y2: this.top-y*200/E.car_weight
-        });
-        canvas.add(this.forceLine);
-    }
 };
-
-//checks if the car is on the node
-Node.prototype.isCarOn=function(){
-    if(E.car){
-        if(this.left>=E.car.left-E.car_length_px/2 && this.left<=E.car.left+E.car_length_px/2){
-            return true;
-        }
-    }
-    return false;
-};
-
