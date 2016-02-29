@@ -42,20 +42,15 @@ var Node = fabric.util.createClass(fabric.Circle, {
 
     _render: function(ctx) {
         this.callSuper('_render', ctx);
-        var yOff; //for positioning the coordinates of the node properly so its visible
-        if (this.floor_beam) {
-            yOff = -30;
-        } else {
-            yOff = 12;
-        }
+
         ctx.font = '20px Arial';
         ctx.fillStyle = 'hsla(87, 100%, 24%, 1)'; //color of the font
         if (this.showCoords) {
             // ctx.fillRect(-10, yOff, 150, 22); //will show a white rectangle background around the coordinates of the node
-            ctx.fillText(this.label+' ('+Math.round(this.left*100)/100+', ' +Math.round(this.top*100)/100+')', 12,yOff+18);
+            ctx.fillText(this.label+' ('+Math.round(this.left*100)/100+', ' +Math.round(this.top*100)/100+')', 12,18);
         }
         else{
-            ctx.fillText(this.label,12,yOff+18);
+            ctx.fillText(this.label,12,18);
         }
     }
 });
@@ -108,7 +103,7 @@ Node.prototype.moveMembers = function(canvas) {
 };
 Node.prototype.setShearStress=function(stress){
     this.maximum_shear_stress=stress || 0;
-    this.label=stress+'MPa';
+    this.label=stress.toFixed(1)+'MPa';
     var percentMax=stress*100/E.node_maximum_shear_stress;
     if(percentMax>100){ //if the force exceeded maximum tensile force
         this.stroke='hsla(65, 100%, 60%, 1)';

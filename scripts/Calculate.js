@@ -13,7 +13,7 @@ function calculateDesignWeight(){
 	}
 	for(var j=0;j<E.members.length;j++){
 		var length=E.members[j].calcLength()/Grid.px_per_cm; //length of member in cm
-		weight+=weightPerMemberLength*length-missingWeightPerMember;
+		weight+=2*(weightPerMemberLength*length-missingWeightPerMember);//multiply by 2 because theres two sides to it
 	}
 	return weight;
 }
@@ -119,14 +119,13 @@ function calculateMaxShearForce(){
 		var force_arrangement=[];
 		var shear_forces=[];
 		var maximum_shear_force=0;
-		forces.push(E.nodes[i].external_force);
+		E.nodes[i].external_force[0] || E.nodes[i].external_force[1] ? forces.push(E.nodes[i].external_force): false;
 		debugger
 		//add the forces of the members to the force array
 		for(var j=0;j<E.nodes[i].connected_members.length;j++){
 			E.nodes[i].connected_members[j].calcUnitVector();
 			forces.push([E.nodes[i].connected_members[j].force*E.nodes[i].connected_members[j].unit_vector[0],E.nodes[i].connected_members[j].force*E.nodes[i].connected_members[j].unit_vector[1]]);
 		}
-		console.log(forces);
 
 		var firstLowest=1E12, secondLowest=1E12, firstLowestIndex=null, secondLowestIndex=null;
 		//find the two lowest magnitude forces
