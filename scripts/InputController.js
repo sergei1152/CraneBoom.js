@@ -4,50 +4,9 @@
 var EntityController=require('./EntityController');
 var Grid=require('./Grid');
 var Optimizer=require('./Optimizer');
+var Calculate=require('./Calculate');
 
 var InputController=function(){
-
-	$('#bridge-length-input').change(function() {
-	    var new_bridge_length = parseInt($(this).val());
-	    if (!isNaN(new_bridge_length)) { //to make sure the input is valid (is an integer)
-	       EntityController.bridge_length=new_bridge_length;
-	    }
-	});
-
-	$('#car-weight-input').change(function() {
-	    var new_car_weight = parseInt($(this).val());
-	    if (!isNaN(new_car_weight)) { //to make sure the input is valid (is an integer)
-	       EntityController.car_weight=new_car_weight;
-	    }
-	});
-
-	$('#car-length-input').change(function() {
-	    var new_car_length = parseInt($(this).val());
-	    if (!isNaN(new_car_length)) { //to make sure the input is valid (is an integer)
-	       EntityController.car_length=new_car_length;
-	    }
-	});
-
-	$('#max-compressive-input').change(function() {
-	    var max = parseInt($(this).val());
-	    if (!isNaN(max)) { //to make sure the input is valid (is an integer)
-	       EntityController.max_compressive=max;
-	    }
-	});
-
-	$('#max-tensile-input').change(function() {
-	    var max = parseInt($(this).val());
-	    if (!isNaN(max)) { //to make sure the input is valid (is an integer)
-	       EntityController.max_tensile=max;
-	    }
-	});
-
-	$('#num-floor-input').change(function() {
-	    var num_floor_nodes = parseInt($(this).val());
-	    if (!isNaN(num_floor_nodes) && num_floor_nodes < 10) { //to make sure the input is valid (is an integer and less than 10)
-	       EntityController.createFloorNodes(num_floor_nodes);
-	    }
-	});
 
 	$('#optimizer_var_input').change(function() {
 	    var variance = parseInt($(this).val());
@@ -56,10 +15,11 @@ var InputController=function(){
 	    }
 	});
 
-	$('#optimizer_dur_input').change(function() {
-	    var duration = parseInt($(this).val());
-	    if (!isNaN(duration) && duration >1) { //to make sure the input is valid (is an integer and greater than 1)
-	       Optimizer.duration=duration;
+	$('#desired_ratio_input').change(function() {
+	    var ratio = parseInt($(this).val());
+	    if (!isNaN(ratio) && ratio >1) { //to make sure the input is valid (is an integer and greater than 1)
+	       EntityController.desired_ratio=ratio;
+	       Calculate();
 	    }
 	});
 
