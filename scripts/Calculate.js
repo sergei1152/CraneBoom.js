@@ -87,16 +87,37 @@ function methodOfJoints(){
 	}
 }
 
-//Calculates the cost of the bridge
-function calculateCost(){
-	var bridge_cost=0;
-	for(var i=0;i<E.members.length;i++){
-		var meter_length=E.members[i].member_length/(Grid.grid_size*Grid.grid_meter);
-		bridge_cost+=meter_length*E.member_cost_meter;
+function calculateRuptureAndBucklingStress(){
+	var minimumArea=(E.member_width*E.member_thickness-E.node_diameter*E.member_thickness)*100;//to convert cm^2 to mm2
+	var maximumArea=E.member_width*E.member_thickness*100;
+	var momentOfAreaMember=E.member_width*Math.pow(E.member_thickness,3)*10000/12; //we multiply by 10000 to convert cm4 to mm4
+	var pi_squared=Math.PI*Math.PI;
+
+	for(i=0;i<E.members.length;i++){
+		if(E.members[i].force===0){
+			E.members[i].stress=0;
+		}
+		else if(E.members[i].force>0){ //if we have a tensile force (make sure theres no rupture)
+			E.members[i].stress=E.members[i].force/minimumArea;
+			if(E.members[i].stress>E.max_tensile_stress){
+				E.members[i].rupture_failure=true;
+				console.log('member '+i+' ruptured');
+			}
+		}
+		else if(E.members[i].force<0){ //under compressive stress, make sure there no buckling
+			E.members[i].stress=E.members[i].force/maximumArea;
+			E.members[i].critical_load=pi_squared*E.member_modulus_elasticity*momentOfAreaMember/Math.pow((E.members[i].member_length*10/Grid.px_per_cm),2);
+
+			if(Math.abs(E.members[i].force)>E.members[i].critical_load){
+				E.members[i].buckling_failure=true;
+				console.log('member '+i+' buckled');
+			}
+			if(Math.abs(E.members[i].stress)>E.max_tensile_stress){
+				E.members[i].compressive_failure=true;
+				console.log('member '+i+' failed due to compression');
+			}
+		}
 	}
-	bridge_cost+=E.nodes.length*E.node_cost;
-	E.currentDesignCost=Math.round(bridge_cost*100)/100;
-	return Math.round(bridge_cost*100)/100;
 }
 
 module.exports=function (){
@@ -106,6 +127,7 @@ module.exports=function (){
 	E.loadedPin.external_force=[0,-1*E.design_weight*9.8*E.desired_ratio/1000/2];//we devide by 2 because we're calculating for half the truss
 	calculateSupportReactions();
 	methodOfJoints();
+	calculateRuptureAndBucklingStress();
 	// calculateSupportReactions();
 	// calculateWeightDistributionOfCar();
 	// methodOfJoints();

@@ -17,6 +17,8 @@ var EntityController = {
     member_density: 0.141, //in g/cm^3
     member_thickness: 0.3189, //in cm
     member_width: 0.32154*2, //in cm
+    member_max_tensile_stress: 14.6, //in MPa
+    member_modulus_elasticity: 3600,//in MPA
 
     //dev stuff for calculations
     design_weight: null,

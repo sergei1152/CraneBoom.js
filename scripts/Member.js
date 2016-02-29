@@ -23,6 +23,11 @@ var Member = fabric.util.createClass(fabric.Line, {
             y2: options.y2 || -100,
             label: options.label || '',
             force:null,
+            stress: null,
+            critical_load: null, //critical load (due to buckling)
+            rupture_failure: false,
+            compressive_failure: false, //unlikely to happen, because of buckling
+            buckling_failure: false,
             member_length: null,
             unit_vector: [],
             start_node: null, //what node the member is connected to at it's start
