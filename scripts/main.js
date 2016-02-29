@@ -22,8 +22,6 @@
   InteractionController(canvas, ModeController);
   InputController();
 
-  var num_floor_beams=4;
-
-  EntityController.createFloorNodes(num_floor_beams);
+  EntityController.createSupportNodes();
 
   ModeController.move_mode();

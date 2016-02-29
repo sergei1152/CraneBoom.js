@@ -2,6 +2,9 @@
 var E=require('./EntityController');
 var Grid=require('./Grid');
 
+function calculateDesignWeight(){
+	
+}
 //Calculating the support reactions at the 2 support nodes using moments
 function calculateSupportReactions(){
 	Grid.calcGridMeter(E);
