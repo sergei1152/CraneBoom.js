@@ -192,4 +192,6 @@ module.exports=function (){
 	$('#design_weight').text(E.design_weight.toFixed(2)+'g');
 	$('#applied_load').text((E.design_weight*E.desired_ratio).toFixed(2)+'g');
 	$('#design_pass').text(E.designPass);
+	$('#px_per_cm').text(Grid.px_per_cm.toFixed(2)+'px/cm');
+
 };
