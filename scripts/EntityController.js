@@ -14,11 +14,14 @@ var EntityController = {
     
     node_density: 0.65, //in g/cm^3
     node_diameter: 0.32154,
+    node_maximum_tensile_stress: 117,//in mpa
+    node_maximum_shear_stress: 23, //in mpa
     member_density: 0.141, //in g/cm^3
     member_thickness: 0.3189, //in cm
     member_width: 0.32154*2, //in cm
     member_max_tensile_stress: 14.6, //in MPa
     member_modulus_elasticity: 3600,//in MPA
+    maximum_bearing_stress: null, //need to calculate this later
 
     //dev stuff for calculations
     design_weight: null,
@@ -35,6 +38,9 @@ var EntityController = {
     //for optimizer stuff
     designPass: false,
     
+    calculateBearingMaxBearingStress: function(){
+        this.maximum_bearing_stress=Math.min(this.member_max_tensile_stress,this.node_maximum_tensile_stress);
+    },
     //A reset function  
     clearAllNodes: function() {
         this.nodes=[];

@@ -22,6 +22,7 @@ var Node = fabric.util.createClass(fabric.Circle, {
             selectable: options.selectable || true,
             hasControls: false,
             hasBorders: false,
+            maximum_shear_stress: null,
             support: options.support || false, //if the node is a support (and thus is a floor beam as well)
             floor_beam: options.floor_beam || false, //if the node is a floor beam
             external_force: [0,0], //the reaction forces acting on the floor beam
@@ -106,4 +107,42 @@ Node.prototype.moveMembers = function(canvas) {
 Node.prototype.setForce=function(x,y,canvas){
     this.external_force[0]=x || 0;
     this.external_force[1]=y || 0;
+
+    roundedX=Math.round(x*100)/100;
+    roundedY=Math.round(y*100)/100;
+
+    if(this.forceLineX && this.forceLineY){ //if a force line already exists
+        this.forceLineX.set({
+            x1: this.left,
+            y1: this.top,
+            label: Math.abs(roundedX),
+            x2: this.left+roundedX*10,
+            y2: this.top
+        });
+        this.forceLineY.set({
+            x1: this.left,
+            y1: this.top,
+            label: Math.abs(roundedY),
+            x2: this.left,
+            y2: this.top-30*roundedY
+        }); 
+    }
+    else { //if the forceline doesnt yet exist
+        this.forceLineX=new ForceLine({
+            x1: this.left,
+            y1: this.top,
+            label: Math.abs(roundedX),
+            x2: this.left+roundedX*10,
+            y2: this.top
+            }); 
+        this.forceLineY=new ForceLine({
+            x1: this.left,
+            y1: this.top,
+            label: Math.abs(roundedY),
+            x2: this.left,
+            y2: this.top-30*roundedY
+            }); 
+        canvas.add(this.forceLineX);
+        canvas.add(this.forceLineY);
+    }
 };

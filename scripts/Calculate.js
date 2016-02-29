@@ -20,8 +20,11 @@ function calculateDesignWeight(){
 //Calculating the support reactions at the 2 support nodes using moments
 function calculateSupportReactions(){
 	//calculate support reactions, and otherwise 0 if the car is completely out of the bridge and not touching the supports
-	E.supportA.setForce(Math.abs(E.crane_length/E.crane_height*E.loadedPin.external_force[1]),Math.abs(E.loadedPin.external_force[1]));
-	E.supportB.setForce(-1*E.supportA.external_force[0],0);
+	E.supportA.setForce(-1*Math.abs(E.crane_length/E.crane_height*E.loadedPin.external_force[1]),Math.abs(E.loadedPin.external_force[1]),Grid.canvas);
+	E.supportB.setForce(-1*E.supportA.external_force[0],0,Grid.canvas);
+	console.log('Support A');
+	console.log(E.supportA.external_force);
+	console.log(E.supportB.external_force);
 }
 
 //Creates a matrix of 2N-3 equations based on the method of joints, and solves it
@@ -92,7 +95,8 @@ function calculateRuptureAndBucklingStress(){
 	var maximumArea=E.member_width*E.member_thickness*100;
 	var momentOfAreaMember=E.member_width*Math.pow(E.member_thickness,3)*10000/12; //we multiply by 10000 to convert cm4 to mm4
 	var pi_squared=Math.PI*Math.PI;
-
+	var maximumBearingLoad=E.maximum_bearing_stress*E.member_thickness*E.node_diameter*100; //multiply by 100 to convert cm2 to mm2
+	console.log('THe maximum bearing load is'+maximumBearingLoad);
 	for(i=0;i<E.members.length;i++){
 		if(E.members[i].force===0){
 			E.members[i].stress=0;
@@ -108,7 +112,7 @@ function calculateRuptureAndBucklingStress(){
 			E.members[i].stress=E.members[i].force/maximumArea;
 			E.members[i].critical_load=pi_squared*E.member_modulus_elasticity*momentOfAreaMember/Math.pow((E.members[i].member_length*10/Grid.px_per_cm),2);
 
-			if(Math.abs(E.members[i].force)>E.members[i].critical_load){
+			if(Math.abs(E.members[i].force)>E.members[i].critical_load/4){//we devide the critical load by 4 since euler's appriximation overestimates
 				E.members[i].buckling_failure=true;
 				console.log('member '+i+' buckled');
 			}
@@ -120,14 +124,78 @@ function calculateRuptureAndBucklingStress(){
 	}
 }
 
+function calculateMaxShearForce(){
+	var node_area=Math.PI*Math.pow(E.node_diameter,2)*100/4;//multiply by 100 to convert to mm2
+	for(var i=0;i<E.nodes.length;i++){
+		var forces=[];
+		var force_arrangement=[];
+		var shear_forces=[];
+		var maximum_shear_force=0;
+		forces.push(E.nodes[i].external_force);
+		debugger
+		//add the forces of the members to the force array
+		for(var j=0;j<E.nodes[i].connected_members.length;j++){
+			E.nodes[i].connected_members[j].calcUnitVector();
+			forces.push([E.nodes[i].connected_members[j].force*E.nodes[i].connected_members[j].unit_vector[0],E.nodes[i].connected_members[j].force*E.nodes[i].connected_members[j].unit_vector[1]]);
+		}
+		console.log(forces);
+
+		var firstLowest=1E12, secondLowest=1E12, firstLowestIndex=null, secondLowestIndex=null;
+		//find the two lowest magnitude forces
+		for(var j=0;j<forces.length;j++){
+			var magnitude=Math.sqrt(forces[j][0]*forces[j][0]+forces[j][1]*forces[j][1]);
+			if(magnitude<firstLowest){
+				firstLowest=magnitude;
+				firstLowestIndex=i;
+			}
+			else if (magnitude<secondLowest){
+				secondLowest=magnitude;
+				secondLowestIndex=j;
+			}
+		}
+
+		shear_forces.push(firstLowest);
+		shear_forces.push(secondLowest);
+		force_arrangement.push(forces.splice(firstLowestIndex,1));
+		firstLowestIndex < secondLowestIndex ? forces.splice(secondLowestIndex-1,1) : forces.splice(secondLowestIndex,1); //get rid of of the second greatest force
+
+		var total_x=force_arrangement[0][0];
+		var total_y=force_arrangement[0][1];
+		while(forces.length>1){
+			var lowest_mag=1E12;
+			var lowest_index=null;
+			for(var j=0;j<forces.length;j++){
+				var shear=Math.sqrt(Math.pow(total_x+forces[j][0],2)+Math.pow(total_y+forces[j][1],2));
+				if(shear<lowest_mag){
+					lowest_mag=shear;
+					lowest_index=j;
+				}
+			}
+			total_x+=forces[lowest_index][0];
+			total_y+=forces[lowest_index][1];
+			shear_forces.push(Math.sqrt(Math.pow(total_x,2)+Math.pow(total_y,2)));
+			force_arrangement.push(forces.splice(lowest_index,1));
+		}
+
+		for(var j=0;j<shear_forces.length;j++){
+			if(shear_forces[j]>maximum_shear_force){
+				maximum_shear_force=shear_forces[j];
+			}
+		}
+		E.nodes[i].maximum_shear_stress=maximum_shear_force/node_area;
+	}
+}
+
 module.exports=function (){
 	Grid.calcPxPerCm(E);
 	E.design_weight=calculateDesignWeight();
 
-	E.loadedPin.external_force=[0,-1*E.design_weight*9.8*E.desired_ratio/1000/2];//we devide by 2 because we're calculating for half the truss
+	E.loadedPin.setForce(0,-1*E.design_weight*9.8*E.desired_ratio/1000/2,Grid.canvas);//we devide by 2 because we're calculating for half the truss
 	calculateSupportReactions();
 	methodOfJoints();
-	calculateRuptureAndBucklingStress();
+	// E.calculateBearingMaxBearingStress();
+	// calculateRuptureAndBucklingStress();
+	// calculateMaxShearForce();
 	// calculateSupportReactions();
 	// calculateWeightDistributionOfCar();
 	// methodOfJoints();
