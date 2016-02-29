@@ -46,12 +46,14 @@ function methodOfJoints(){
 			for(var k=0;k<E.nodes[i].connected_members.length;k++){ 
 				if(E.members[j]===E.nodes[i].connected_members[k]){ //if the member is connected to the node
 					if(E.nodes[i].connected_members[k].x1===E.nodes[i].left && E.nodes[i].connected_members[k].y1===E.nodes[i].top){ //if the start of the member is connected to the node
-						rowX.push(-E.nodes[i].connected_members[k].unit_vector[0]);
-						rowY.push(-E.nodes[i].connected_members[k].unit_vector[1]);
-					}
-					else{ //if the end of the member is at the node, flip the direction so all forces are tensile
 						rowX.push(E.nodes[i].connected_members[k].unit_vector[0]);
 						rowY.push(E.nodes[i].connected_members[k].unit_vector[1]);
+						
+					}
+					else{ //if the end of the member is at the node, flip the direction so all forces are tensile
+						rowX.push(-1*E.nodes[i].connected_members[k].unit_vector[0]);
+						rowY.push(-1*E.nodes[i].connected_members[k].unit_vector[1]);
+						
 					}
 					connected=true;
 				}
@@ -73,7 +75,8 @@ function methodOfJoints(){
 	solution.pop();
 	solution.pop();
 	solution.pop();
-
+	console.log(numeric.prettyPrint(force_matrix));
+	console.log(numeric.prettyPrint(solution));
 	var forces=numeric.solve(force_matrix, solution, false); //solving for the forces
 
 	E.designPass=true; //for checking whether a design meets the criteria
