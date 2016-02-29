@@ -64,7 +64,7 @@ Member.prototype.calcLength=function(){
 //calculates the unit vector of the member (length needs to be calculated first, so calcLength() should be called before hand)
 Member.prototype.calcUnitVector=function(){
     this.unit_vector[0]=(this.x2-this.x1)/this.member_length;
-    this.unit_vector[1]=(this.y1-this.y2)/this.member_length;
+    this.unit_vector[1]=(this.y2-this.y1)/this.member_length;
 };
 
 //for the import functionality, takes in a json singleton representing a member, and applies its properties to the current member

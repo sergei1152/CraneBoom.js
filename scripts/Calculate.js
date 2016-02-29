@@ -47,12 +47,12 @@ function methodOfJoints(){
 				if(E.members[j]===E.nodes[i].connected_members[k]){ //if the member is connected to the node
 					if(E.nodes[i].connected_members[k].x1===E.nodes[i].left && E.nodes[i].connected_members[k].y1===E.nodes[i].top){ //if the start of the member is connected to the node
 						rowX.push(E.nodes[i].connected_members[k].unit_vector[0]);
-						rowY.push(E.nodes[i].connected_members[k].unit_vector[1]);
+						rowY.push(-1*E.nodes[i].connected_members[k].unit_vector[1]);
 						
 					}
 					else{ //if the end of the member is at the node, flip the direction so all forces are tensile
 						rowX.push(-1*E.nodes[i].connected_members[k].unit_vector[0]);
-						rowY.push(-1*E.nodes[i].connected_members[k].unit_vector[1]);
+						rowY.push(E.nodes[i].connected_members[k].unit_vector[1]);
 						
 					}
 					connected=true;
