@@ -3,7 +3,7 @@ var Grid = {
     canvas: null,
     grid_size: 30,
     min_grid_size:14,
-    grid_meter: 1, //number of grid squares per meter
+    px_per_cm: 1, //number of pixels per cm
     lines: [], //to keep track of the lines created so they can be removed
 
     //Removes the current Grid
@@ -39,9 +39,10 @@ var Grid = {
             Grid.canvas.sendToBack(line);
         }
     },
-    calcGridMeter: function(EntityController){ 
+    
+    calcPxPerCm: function(EntityController){ 
         if(EntityController.supportA && EntityController.loadedPin){
-            this.grid_meter=(EntityController.supportB.left-EntityController.supportA.left)/(this.grid_size*EntityController.bridge_length);
+            this.px_per_cm=(EntityController.loadedPin.left-EntityController.supportA.left)/(EntityController.crane_length);
         }
     }
 };

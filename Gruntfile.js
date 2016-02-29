@@ -6,7 +6,7 @@ module.exports = function(grunt) {
       //will watch for any modification of files
       staticJS: {
         files: ['./scripts/**.*'], //All files within directory
-        tasks: ['jshint:client','browserify:dist'], //will hint the files and then minify and concatinate
+        tasks: ['browserify:dist'], //will hint the files and then minify and concatinate
         options: { //Server options
           spawn: false, //Must have for reload
           livereload: false //Enable LiveReload

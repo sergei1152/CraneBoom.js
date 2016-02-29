@@ -2,18 +2,21 @@ var Grid = require('./Grid');
 var Node=require('./Node');
 var Member=require('./Member');
 
-String.prototype.replaceAll = function(str1, str2, ignore) 
-{
-    return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
-};
+
 
 //Keeps track of all the nodes and members in the bridge design
 var EntityController = {
 	//configurable variables
     crane_length: 30, //the length of the crane from the supports to the load
-    support_distance: 5, //the length between the two supports
-    desires_ratio: 187, //mass to mass ratio for the crane boom
-    member_width: 0.32, //3.2mm width
+    crane_depth: 6, //in cm
+    crane_height: 5, //the length between the two supports
+    desired_ratio: 187, //mass to mass ratio for the crane boom
+    
+    node_density: 0.65, //in g/cm^3
+    node_diameter: 0.32154,
+    member_density: 0.141, //in g/cm^3
+    member_thickness: 0.3189, //in cm
+    member_width: 0.32154*2, //in cm
 
     //dev stuff for calculations
     design_weight: null,
@@ -56,20 +59,11 @@ var EntityController = {
           lockMovementY: true,
           lockMovementX: true
         });
-        var supportB=new Node({
-          support: true,
-          floor_beam: true,
-          left: canvasWidth/8,
-          top: canvasHeight/3+Grid.grid_size*this.support_distance,
-          stroke: '#F41313',
-          lockMovementY: true,
-          lockMovementX: true
-        });
 
         var loaded_node=new Node({
           support: false,
           floor_beam: false,
-          left: canvasWidth/8+Grid.grid_size*this.crane_length,
+          left: 7*canvasWidth/8,
           top: canvasHeight/3,
           stroke: '#F41313',
           lockMovementY: false,
@@ -77,9 +71,22 @@ var EntityController = {
         });
 
         this.supportA=supportA;
-        this.supportB=supportB;
         this.loadedPin=loaded_node;
+        
+        //calculate px per cm and position the last support appropriately
+        Grid.calcPxPerCm(this);
 
+        var supportB=new Node({
+          support: true,
+          floor_beam: true,
+          left: canvasWidth/8,
+          top: canvasHeight/3+Grid.px_per_cm*this.crane_height,
+          stroke: '#F41313',
+          lockMovementY: true,
+          lockMovementX: true
+        });
+       
+        this.supportB=supportB;
         //EntityController.floor_nodes.push(supportA);
         EntityController.addNode(supportA);
         EntityController.addNode(supportB);
@@ -121,9 +128,6 @@ var EntityController = {
             return true;
         }
         return false;
-    },
-    calcCarLengthPx: function() {
-        this.car_length_px = this.car_length * Grid.grid_size * Grid.grid_meter;
     },
 
     exportHash: function(jsonStr) {
@@ -281,6 +285,11 @@ var EntityController = {
         }
         Grid.canvas.renderAll();
     },
+};
+
+String.prototype.replaceAll = function(str1, str2, ignore) 
+{
+    return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
 };
 
 module.exports = EntityController;

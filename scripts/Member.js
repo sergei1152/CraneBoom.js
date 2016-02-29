@@ -53,6 +53,7 @@ var Member = fabric.util.createClass(fabric.Line, {
 //calculates the length of the member in pixels for cost calculations
 Member.prototype.calcLength=function(){
     this.member_length=Math.sqrt((this.x2-this.x1)*(this.x2-this.x1)+(this.y2-this.y1)*(this.y2-this.y1));
+    return this.member_length;
 };
 
 //calculates the unit vector of the member (length needs to be calculated first, so calcLength() should be called before hand)
