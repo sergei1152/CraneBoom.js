@@ -47,7 +47,7 @@ var Node = fabric.util.createClass(fabric.Circle, {
         ctx.fillStyle = 'hsla(87, 100%, 24%, 1)'; //color of the font
         if (this.showCoords) {
             // ctx.fillRect(-10, yOff, 150, 22); //will show a white rectangle background around the coordinates of the node
-            ctx.fillText(this.label+' ('+Math.round(this.left*100)/100+', ' +Math.round(this.top*100)/100+')', 12,18);
+            ctx.fillText('('+Math.round(this.left*100)/100+', ' +Math.round(this.top*100)/100+')', 12,18);
         }
         else{
             ctx.fillText(this.label,12,18);
