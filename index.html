@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8">
-		<title>TrussSim.js</title>
+		<title>CraneBoom.js</title>
 	</head>
 	<link rel="stylesheet" href="style/bootstrap.min.css">
 	<link rel="stylesheet" href="style/main.css">
@@ -10,7 +10,11 @@
 		<nav class="navbar navbar-default">
 			<div class="container-fluid">
 				<div class="navbar-header">
-					<a class="navbar-brand" href="https://github.com/sergei1152/TrussSim.js">TrussSim.js</a>
+					<a class="navbar-brand" href="https://github.com/sergei1152/TrussSim.js">CraneBoom.js</a>
+
+				</div>
+				<div style="margin-top: 15px;">
+					<p>Created by Serj Babayan for the MTE219 Project</p>
 				</div>
 			</div>
 		</nav>
@@ -30,17 +34,6 @@
 				<div class="form-group">
 					<label for="grid-spacing">Member Width</label>
 					<input type="text" class="form-control" id='member_width' name="grid-spacing" placeholder="Default: 0.6cm">
-				</div>
-	
-				<div class="form-group">
-					<label for="export-cont">Export and Import</label>
-					<textarea class="form-control" id="export-cont" placeholder="Copy and paste here to import"></textarea>
-					<input type="text" class="form-control" id="uniqueHash" placeholder="Unique Generated Hash" readonly="true">
-					<button class="btn btn-success" id='exportBtn'>Export</button>
-					<button class="btn btn-primary" id='importBtn'>Import</button>
-				</div>
-				<div class="floor-node">
-					<h4>Floor Node Seperation: </h4><h4 style="margin-left:40px;padding-left:40;" id="floorNodeDist"></h4>
 				</div>
 			</form>
 			<br>
