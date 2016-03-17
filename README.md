@@ -2,7 +2,7 @@
 #####A general purpose 2D Force and Stress Simulator [Try It Here](http://sergei1152.github.io/CraneBoom.js/)
 #####Based off of [TrussSim.js](https://github.com/sergei1152/TrussSim.js) for the MTE219 Final Project
 
-![alt text](https://github.com/sergei1152/CraneBoom.js/blob/master/simulation.jpg "Simulation Example")
+![Simulation Example](https://github.com/sergei1152/CraneBoom.js/blob/master/screenshot.jpg)
 
 ###Supported Browsers
 - Chrome (Recommended)
